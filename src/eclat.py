@@ -1,18 +1,4 @@
-def support_count(pattern, D):
-    """Return the support count of 
-    pattern in dataset D.
-
-    Key arguments:
-    pattern -- interesting pattern possibly
-               appearing in the dataset
-    D -- dataset
-    """
-    support_count = 0
-    tmp_p = set(pattern)
-    for transaction in D:
-        if tmp_p <= set(transaction):
-            support_count += 1
-    return support_count
+from helper import transpose
 
 
 def eclat(F, X, I, D, minsupcount):
