@@ -1,7 +1,7 @@
 week | monday | tuesday | wednesday | thursday | friday | saturday | sunday
 --- | --- | --- | --- | --- | --- | --- | ---
-13.03.-19.03. | first meeting | searching data | searching data | parking ticket data | vechile registration data | apriori implementation | planning different topics
-20.03.-26.03. | confirming topic | eclat implementation |               |                      |                                      |                        |
+13.03.-19.03. | first meeting | searching data | searching data | parking ticket data | vechile registration data | apriori impl. | planning topics
+20.03.-26.03. | confirming topic | eclat implementation |   |   |   |  |
 27.03.-02.04. |   |   |   |   | project topic dl |   |
 03.04.-09.04. |   |   |   |   |   |   |
 10.04.-16.04. |   |   |   |   |   |   |
