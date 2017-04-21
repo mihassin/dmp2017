@@ -7,7 +7,7 @@ from helper import transpose
 
 # Globally accessable file_name and data_file
 __file_name__ = "Tieliikenne_AvoinData_4_8.zip"
-__data_file__ = "vechicledata.csv"
+__data_file__ = "vehicledata.csv"
 
 
 def fetch_data():
