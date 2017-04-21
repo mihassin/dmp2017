@@ -14,13 +14,12 @@ def fetch_data():
     """Function that fetches the project data from hardcoded location.
     The zip file will be stored in ../target/
     """
-    url = "http://trafiopendata.97.fi/opendata/" + file_name
+    url = "http://trafiopendata.97.fi/opendata/" + __file_name__
     req = urllib.request.urlopen(url)
     meta = req.info()
-    pr = check_project_root(project_root)
-    storing_location = pr +  "target/" + file_name
+    storing_location = "../target/" + __file_name__
     file_size = int(meta.get("Content-Length"))
-    print("Downloading: %s Bytes: %s" % (file_name, file_size))
+    print("Downloading: %s Bytes: %s" % (__file_name__, file_size))
     with open(storing_location, 'wb') as f:
         file_size_dl = 0
         block_sz = 8192
