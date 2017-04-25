@@ -414,9 +414,9 @@ def plot_pie(values, labels, colors=[], title="", legend=False, sort=False):
 
 def main():
 	input_var = input('This script will display 17 pie chart.\n'
-					+ 'The sciprt will most likely take alot of processing time.'
+					+ 'The sciprt will most likely take alot of processing time.\n'
 					+ 'Would you like to see the class pie charts? (Y/N)\n')
-	if str.lower(input_var) == 'y'
+	if str.lower(input_var) == 'y':
 		plot_vechicle_classes()
 		plot_init_reg_date()
 		plot_usage()
