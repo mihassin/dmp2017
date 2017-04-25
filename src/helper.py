@@ -7,6 +7,18 @@ def transpose(matrix):
     return [list(col) for col in zip(*matrix)]
 
 
+def flatten(matrix):
+	'''Transforms a doubly nested list into
+	regular list
+
+	matrix -- list() of list():s
+	'''
+	lst = list()
+	for row in matrix:
+		lst.extend(lst)
+	return lst
+
+
 def class_support(row_distr, min_v, max_v):
     '''Method for calculating support of
     real valued data features. Class is 
