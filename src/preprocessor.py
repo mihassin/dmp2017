@@ -4,14 +4,15 @@ import csv
 import os
 
 from helper import transpose
+from codebook import CodeBook
 
-# Globally accessable file_name and data_file
+# Globally accessible file_name and data_file
 __file_name__ = "Tieliikenne_AvoinData_4_8.zip"
 __data_file__ = "vehicledata.csv"
 
 
 def fetch_data():
-    """Function that fetches the project data from hardcoded location.
+    """Function that fetches the project data from hard-coded location.
     The zip file will be stored in ../target/
     """
     url = "http://trafiopendata.97.fi/opendata/" + __file_name__
@@ -89,3 +90,33 @@ def data_attributes():
         reader = csv.reader(csvfile, delimiter=';')
         attributes = next(reader)
     return attributes
+
+
+def cleanse_and_transform():
+    data = []
+    with open('../target/' + __data_file__, encoding='latin_1') as csvfile:
+        cb = CodeBook()
+        reader = csv.reader(csvfile, delimiter=';')
+        next(reader)
+        for row in reader:
+            row = trim_features(row)
+            if row.__contains__(''): continue
+            data.append(row)
+        data = cb.classify(data)
+        data = cb.integerify(data)
+    return data
+
+
+def trim_features(row):
+    '''Removes unsuitable columns from the row
+    
+    Argument:
+    row -- a row in the data matrix
+    ''' 
+    trimmed = row[0:2]
+    trimmed.append(row[3])
+    trimmed.extend(row[6:9])
+    trimmed.extend(row[11:13])
+    trimmed.extend(row[15:24])
+    trimmed.extend(row[33:35])
+    return trimmed
