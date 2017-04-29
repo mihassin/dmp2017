@@ -15,8 +15,21 @@ def flatten(matrix):
 	'''
 	lst = list()
 	for row in matrix:
-		lst.extend(lst)
+		lst.extend(row)
 	return lst
+
+
+def powerset(s = set()):
+	'''Returns the powerset of s. Since doubly nested set
+	is not allowed in python, the actual return value is a list
+	of sets.
+
+	s -- a set
+	'''
+	result = [[]]
+	for element in s:
+		result.extend([subset + [element] for subset in result])
+	return [set(lst) for lst in result]
 
 
 def class_support(row_distr, min_v, max_v):
