@@ -124,3 +124,11 @@ def data_attributes():
         attributes = next(reader)
     return attributes
 
+def stringify(data):
+    '''The Integer values of data are indexes of list cb._classes.
+    It is important, that sthe ame instant of cb does the stringification
+    and integerization. Otherwise the ordering might vary and the results
+    will be false. This function ensures the use of the correct cb instance. 
+    '''
+    return cb.stringify(data)
+
