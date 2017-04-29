@@ -1,5 +1,6 @@
 import math
 from helper import transpose
+from helper import powerset
 
 def support_count(pattern, D):
     """Return the support count of pattern in dataset D.
@@ -14,7 +15,7 @@ def support_count(pattern, D):
         if tmp_p <= set(transaction):
             support_count += 1
     return support_count
-
+    
 
 def contingency_table(X, Y, D):
 	'''Returns the contingency table for X and Y in D.
@@ -25,7 +26,7 @@ def contingency_table(X, Y, D):
 	D -- dataset
 	'''
 	N = len(D)
-	f11 = support_count(X + Y, D)
+	f11 = support_count(X.union(Y), D)
 	f1_ = support_count(X, D) 
 	f10 = f1_ - f11
 	f_1 = support_count(Y, D)
@@ -44,7 +45,7 @@ def confidence(X, Y, D):
 	Y -- right side of the rule
 	D -- dataset
 	'''
-	return support_count(X + Y, D) / support_count(X, D)
+	return support_count(X.union(Y), D) / support_count(X, D)
 
 
 def j_measure(X, Y, D):
@@ -105,7 +106,7 @@ def lift(X, Y, D):
 	D -- dataset
 	'''
 	N = len(D)
-	return (N * support_count(X + Y, D)) / (support_count(X, D) * support_count(Y, D))
+	return (N * support_count(X.union(Y), D)) / (support_count(X, D) * support_count(Y, D))
 
 
 def correlation(X, Y, D):
@@ -147,4 +148,26 @@ def IS(X, Y, D):
 	Y -- second variable
 	D -- dataset
 	'''
-	return support_count(X + Y, D) / math.sqrt(support_count(X, D) * support_count(Y, D))
+	#return support_count(X + Y, D) / math.sqrt(support_count(X, D) * support_count(Y, D))
+	return support_count(X.union(Y), D) / math.sqrt(support_count(X, D) * support_count(Y, D))
+
+
+def generate_patterns(frequent, data, measure, minval = -1e30):
+	'''Generates patterns from frequent itemsets with 
+	different interestingness measures. Also ignores patterns
+	below threshold value minval
+
+	frequent -- list of frequent itemsets
+	data -- data set where frequent are gathered
+	measure -- confidence, j_measure, laplace
+	           conviction, lift, correlation, 
+	           odds_ratio or IS
+	minval -- threshold value
+	'''
+	rules = []
+	for f in frequent:
+		for c in powerset(f):
+			value = measure(c, f - c, data) 
+			if value >= minval:
+				rules.append([c, f - c, value])
+	return rules
