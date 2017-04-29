@@ -25,8 +25,8 @@ def _eclat(F, X, I, D, minsup = 0, maxlen = None):
     D -- data set
     minsup -- minimum support
     """
-    minsupcount = int(minsup*len(D))
-    if not maxlen: maxlen = 1e30
+    N = len(D)
+    minsupcount = int(minsup*N)
     if I == set():
         return set()
     frequent = []
@@ -36,9 +36,10 @@ def _eclat(F, X, I, D, minsup = 0, maxlen = None):
         if(sc >= minsupcount and len(candidate) <= maxlen):
             frequent.append((candidate, item, sc))
     for new_X, item, sc  in frequent:
-        F.append(new_X)
+        F.append([new_X, 1.*sc/N])
         I = I - {item}
         _eclat(F, new_X, I, D, minsup, maxlen)
+
 
 def eclat(data, minsup = 0, maxlen = None):
     '''Layer between user and actual eclat algorithm.
@@ -54,6 +55,7 @@ def eclat(data, minsup = 0, maxlen = None):
     '''
     frequent_itemsets = []
     I = _one_item_sets(data)
+    if not maxlen: maxlen = 1e30
     _eclat(frequent_itemsets, set(), I, data, minsup, maxlen)
     return frequent_itemsets
 
@@ -70,3 +72,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
