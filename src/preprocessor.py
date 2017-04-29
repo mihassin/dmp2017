@@ -10,6 +10,8 @@ from codebook import CodeBook
 __file_name__ = "Tieliikenne_AvoinData_4_8.zip"
 __data_file__ = "vehicledata.csv"
 
+cb = CodeBook()
+
 
 def fetch_data():
     """Function that fetches the project data from hard-coded location.
@@ -50,52 +52,14 @@ def extract_data():
     os.rename(path+data_file, path+__data_file__)
 
 
-def read_column(attribute = 0):
-    """Reads a column from the data file.
-    Skips the headings.
-
-    Key arguments:
-    attribute -- index value of the desired column
-    """
-    data = [] 
-    with open('../target/' + __data_file__, encoding="latin_1") as csvfile:
-        reader = csv.reader(csvfile, delimiter=';')
-        next(reader)
-        for row in reader:
-            data.append(row[attribute])
-    return data
-
-
-def col_distribution(col):
-    '''Counts each distinct item in col
-    and returns a dictionary, where keys are the
-    col items and values their counts.
-
-    Argument:
-    col -- a list containing data column
-    '''
-    distr = {}
-    for c in col:
-        if c not in distr:
-            distr[c] = 1
-        else:
-            distr[c] += 1
-    return distr
-
-
-def data_attributes():
-    '''Reads the first row of data file.
-    '''
-    with open('../target/' + __data_file__, encoding="latin_1") as csvfile:
-        reader = csv.reader(csvfile, delimiter=';')
-        attributes = next(reader)
-    return attributes
-
-
 def cleanse_and_transform():
+    '''Removes columns, that are not suitable or interesting for data mining.
+    Removes all rows containing null values. Transforms all values into categories,
+    splits each category into their own binary attribute. Each of the binary attributes
+    have integer label.
+    '''
     data = []
     with open('../target/' + __data_file__, encoding='latin_1') as csvfile:
-        cb = CodeBook()
         reader = csv.reader(csvfile, delimiter=';')
         next(reader)
         for row in reader:
@@ -120,3 +84,43 @@ def trim_features(row):
     trimmed.extend(row[15:24])
     trimmed.extend(row[33:35])
     return trimmed
+
+def read_column(attribute = 0):
+    """Reads a column from the data file.
+    Skips the headings.
+
+    attribute -- index value of the desired column
+    """
+    data = [] 
+    with open('../target/' + __data_file__, encoding="latin_1") as csvfile:
+        reader = csv.reader(csvfile, delimiter=';')
+        next(reader)
+        for row in reader:
+            data.append(row[attribute])
+    return data
+
+
+def col_distribution(col):
+    '''Counts each distinct item in col
+    and returns a dictionary, where keys are the
+    col items and values their counts.
+
+    col -- a list containing data column
+    '''
+    distr = {}
+    for c in col:
+        if c not in distr:
+            distr[c] = 1
+        else:
+            distr[c] += 1
+    return distr
+
+
+def data_attributes():
+    '''Reads the first row of data file.
+    '''
+    with open('../target/' + __data_file__, encoding="latin_1") as csvfile:
+        reader = csv.reader(csvfile, delimiter=';')
+        attributes = next(reader)
+    return attributes
+
