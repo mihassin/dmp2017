@@ -2,6 +2,7 @@ import math
 from helper import transpose
 from helper import powerset
 
+
 def support_count(pattern, D):
     """Return the support count of pattern in dataset D.
 
@@ -48,8 +49,8 @@ def confidence(X, Y, D):
 	return support_count(X.union(Y), D) / support_count(X, D)
 
 
-def j_measure(X, Y, D):
-	'''Calculates the J-measure of rule X -> Y in D.
+def added_value(X, Y, D):
+	'''Calculates the Added Value of rule X -> Y in D.
 
 	Arguments:
 	X -- first subset of the itemset
@@ -57,13 +58,10 @@ def j_measure(X, Y, D):
 	D -- dataset
 	'''
 	f = contingency_table(X, Y, D)
-	N = sum([sum(row) for row in f])
-	res = 0
-	for i in range(2):
-		freq = f[1][i] / N
-		lg = math.log((N * f[1][i]) / (sum(f[1]) * sum(transpose(f)[i])))
-		res += freq * lg
-	return res
+	N = len(D)
+	result = f[1][1] / sum(f[1])
+	result -= sum(transpose(f)[1]) / N
+	return result
 
 
 def laplace(X, Y, D):
@@ -93,8 +91,11 @@ def conviction(X, Y, D):
 	f = contingency_table(X, Y, D)
 	f1_ = sum(f[1])
 	f_0 = sum(transpose(f)[0])
-	return (f1_ * f_0) / (N * f[1][0])
-
+	try:
+		result = (f1_ * f_0) / (N * f[1][0])
+	except ZeroDivisionError:
+		result = None
+	return result
 
 # Symmetric objective interestingness measures
 def lift(X, Y, D):
@@ -125,7 +126,11 @@ def correlation(X, Y, D):
 	f_0 = sum(transpose(f)[0])
 	f_1 = sum(transpose(f)[1])
 	denominator = math.sqrt(f0_ * f_0 * f1_ * f_1)
-	return numerator / denominator
+	try:
+		result = numerator / denominator
+	except ZeroDivisionError:
+		result = None
+	return result
 
 
 def odds_ratio(X, Y, D):
@@ -137,7 +142,11 @@ def odds_ratio(X, Y, D):
 	D -- dataset
 	'''
 	f = contingency_table(X, Y, D)
-	return (f[0][0] * f[1][1]) / (f[0][1] * f[1][0])
+	try:
+		result = (f[0][0] * f[1][1]) / (f[0][1] * f[1][0])
+	except ZeroDivisionError:
+		result = None
+	return result
 
 
 def IS(X, Y, D):
@@ -166,8 +175,9 @@ def generate_patterns(frequent, data, measure, minval = -1e30):
 	'''
 	rules = []
 	for f in frequent:
-		for c in powerset(f):
-			value = measure(c, f - c, data) 
-			if value >= minval:
-				rules.append([c, f - c, value])
+		for c in powerset(f[0]):
+			value = measure(c, f[0] - c, data) 
+			if value and value >= minval:
+				rules.append([c, f[0] - c, value])
 	return rules
+
