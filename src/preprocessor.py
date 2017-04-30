@@ -124,11 +124,16 @@ def data_attributes():
         attributes = next(reader)
     return attributes
 
-def stringify(data):
+def stringify(data, kind='frequent'):
     '''The Integer values of data are indexes of list cb._classes.
     It is important, that sthe ame instant of cb does the stringification
     and integerization. Otherwise the ordering might vary and the results
     will be false. This function ensures the use of the correct cb instance. 
     '''
-    return cb.stringify(data)
+    if kind == 'frequent':
+        return cb.stringify_itemsets(data)
+    elif kind == 'rules':
+        return cb.stringify_rules(data)
+    else:
+        return "Second parameter can be either 'frequent' or 'rules'!"
 
