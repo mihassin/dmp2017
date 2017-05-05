@@ -164,7 +164,9 @@ def IS(X, Y, D):
 def generate_patterns(frequent, data, measure, minval = -1e30):
 	'''Generates patterns from frequent itemsets with 
 	different interestingness measures. Also ignores patterns
-	below threshold value minval
+	below threshold value minval. Creates candidates based on
+	the type of measure. For symmetric measures patterns
+	rhs -> lhs and lhs -> rhs have equal value.
 
 	frequent -- list of frequent itemsets
 	data -- data set where frequent are gathered
@@ -175,22 +177,63 @@ def generate_patterns(frequent, data, measure, minval = -1e30):
 	'''
 	rules = []
 	for f in frequent:
-		for c in powerset(f[0]):
+		if is_symmetric(measure):
+			candidates = symmetric_premises(f[0])
+		else:
+			candidates = powerset(f[0])
+		candidates.remove(set())
+		for c in candidates:
 			value = measure(c, f[0] - c, data) 
 			if value and value >= minval:
 				rules.append([c, f[0] - c, f[1], value])
 	return rules
 
 
+def is_symmetric(measure):
+	'''Checks if a measure is symmetric or not.
+	
+	measure -- function of this module
+	'''
+	symmetric = [lift, correlation, odds_ratio, IS]
+	for s in symmetric:
+		if measure == s:
+			return True
+	return False
+
+
+def symmetric_premises(s = set()):
+	'''Returns the powerset of s. Since doubly nested set
+	is not allowed in python, the actual return value is a list
+	of sets.
+
+	s -- a set
+	'''
+	result = [[]]
+	for element in s:
+		result.extend([subset + [element] for subset in result if len(subset)+1 < len(s)/2 ])
+	tmp = [[]]
+	tmp_s = list(s)
+	for e in tmp_s[1:]:
+		tmp.extend([subset + [e] for subset in tmp if len(subset)+2 <= len(tmp_s)/2 ])
+	tmp = [[tmp_s[0]] + subset for subset in tmp if len(subset) + 1 == len(tmp_s) / 2]
+	result.extend(tmp)
+	return [set(lst) for lst in result]
+
+
 def measure_pattern(X, Y, data):
+	'''Calculates all measures for pattern X -> Y
+
+	X -- lhs
+	Y -- rhs
+	data -- transformed transaction data
+	'''
 	result = []
 	result.append(['Confidence', confidence(X, Y, data)])
 	result.append(['Added value', added_value(X, Y, data)])
 	result.append(['Laplace', laplace(X, Y, data)])
 	result.append(['Conviction', conviction(X, Y, data)])
 	result.append(['Lift', lift(X, Y, data)])
-	result.append(['correlation', correlation(X, Y, data)])
+	result.append(['Correlation', correlation(X, Y, data)])
 	result.append(['Odds ratio', odds_ratio(X, Y, data)])
 	result.append(['IS', IS(X, Y, data)])
-	result.append
 	return result
