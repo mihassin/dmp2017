@@ -4,7 +4,7 @@ from preprocessor import Preprocessor
 import eclat
 import interestingness_measures as im
 
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TARGET_PATH = PROJECT_ROOT + '/target/'
 pp = Preprocessor(TARGET_PATH)
 
@@ -32,35 +32,38 @@ if __name__ == "__main__":
 				print('Minimum support has to be between 0 and 1!')
 		print('Mining frequent itemsets..')
 		frequent = eclat.eclat(data, minsup=min_sup)
-		print(pp.stringify(frequent, 'frequent'))
+		pp.store_frequent(frequent)
 		while(True):
-			measure = input('Select a measure: confidence, added value, laplace, conviction, lift, correlation, odds ratio or IS. Press Q to quit program. ')
-			if str.lower(min_sup) == 'q':
+			meas = input('Select a measure: confidence, added value, laplace, conviction, lift, correlation, odds ratio or IS. Press Q to quit program. ')
+			if str.lower(meas) == 'q':
 				quit()
-			if measure == 'confidence':
+			if meas == 'confidence':
 				measure = im.confidence
 				break
-			elif measure == 'added value':
+			elif meas == 'added value':
 				measure = im.added_value
 				break
-			elif measure == 'laplace':
+			elif meas == 'laplace':
 				measure = im.laplace
 				break
-			elif measure == 'conviction':
+			elif meas == 'conviction':
 				measure = im.conviction
 				break
-			elif measure == 'lift':
+			elif meas == 'lift':
 				measure = im.lift
 				break
-			elif measure == 'correlation':
+			elif meas == 'correlation':
 				measure = im.correlation
 				break
-			elif measure == 'odds ratio':
+			elif meas == 'odds ratio':
 				measure = im.odds_ratio
 				break
-			elif measure == 'IS':
+			elif meas == 'IS':
 				measure = im.IS
 				break
 			else:
 				print('Options are: confidence, added value, laplace, conviction, lift, correlation, odds ratio or IS!')
+		print('Mining rules..')
 		rules = im.generate_patterns(frequent, data, measure)
+		pp.store_rules(rules, meas)
+		print('Thank you and good bye!')

@@ -178,6 +178,19 @@ def generate_patterns(frequent, data, measure, minval = -1e30):
 		for c in powerset(f[0]):
 			value = measure(c, f[0] - c, data) 
 			if value and value >= minval:
-				rules.append([c, f[0] - c, value])
+				rules.append([c, f[0] - c, f[1], value])
 	return rules
 
+
+def measure_pattern(X, Y, data):
+	result = []
+	result.append(['Confidence', confidence(X, Y, data)])
+	result.append(['Added value', added_value(X, Y, data)])
+	result.append(['Laplace', laplace(X, Y, data)])
+	result.append(['Conviction', conviction(X, Y, data)])
+	result.append(['Lift', lift(X, Y, data)])
+	result.append(['correlation', correlation(X, Y, data)])
+	result.append(['Odds ratio', odds_ratio(X, Y, data)])
+	result.append(['IS', IS(X, Y, data)])
+	result.append
+	return result

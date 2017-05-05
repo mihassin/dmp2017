@@ -235,6 +235,6 @@ class CodeBook:
 			premise = str(self._stringify(rule[0]))
 			consequence = str(self._stringify(rule[1]))
 			st = premise + " => " + consequence
-			str_rules.append([st, rule[2]])
+			str_rules.append([st, rule[2], rule[3]])
 		return str_rules
 
